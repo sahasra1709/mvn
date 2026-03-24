@@ -1,0 +1,42 @@
+pipeline {
+    agent any  // Use any available agent
+
+    tools {
+        maven 'Maven'  // Make sure this name matches Jenkins config
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/sahasra1709/mvn.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
+        stage('Run Application') {
+            steps {
+                bat 'java -jar target\\maven-1.0-SNAPSHOT.jar'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}
